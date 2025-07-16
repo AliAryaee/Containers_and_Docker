@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
+echo "[*] Installing prerequisites..."
+if ! command -v openvswitch-switch &>/dev/null; then
+  apt update
+  apt install -y openvswitch-switch
+fi
+
 echo "[*] Cleaning up old topology..."
 for ns in node1 node2 node3 node4 router; do
   ip netns list | grep -qw "$ns" && ip netns delete "$ns"
@@ -88,5 +94,4 @@ ip netns exec node3  ip route add default via 10.10.1.1
 ip netns exec node4  ip route add default via 10.10.1.1
 
 echo ">> Network created."
-
 
